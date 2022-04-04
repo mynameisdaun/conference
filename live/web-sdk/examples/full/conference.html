@@ -203,7 +203,7 @@
             async function start() {
               if (isConnected) {
                 isConnected = false;
-                document.querySelector('#enterBtn').innerHTML = "Enter";
+                document.querySelector('#enterBtn').innerHTML = "방송시작";
                 Object.keys(remonRoom).forEach(function(id){
                   if( id !== remon.getChannelId()){
                     let video = document.getElementById(id.replace(":","-"));
@@ -216,7 +216,7 @@
                 remon.close()
               } else {
                 isConnected = true;
-                document.querySelector('#enterBtn').innerHTML = "leave";
+                document.querySelector('#enterBtn').innerHTML = "방송종료";
                 remon = new Remon({ config, listener });
                 await remon.createRoom("remon")
                 let participants = await remon.fetchRooms("remon");

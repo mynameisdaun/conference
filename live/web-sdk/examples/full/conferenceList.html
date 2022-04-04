@@ -30,13 +30,6 @@
   <body id="page-top">
     <!-- Page Wrapper -->
     <div id="wrapper">
-      <!-- Sidebar -->
-      <ul
-        class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
-        id="accordionSidebar"
-      ></ul>
-      <!-- End of Sidebar -->
-
       <!-- Content Wrapper -->
       <div id="content-wrapper" class="d-flex flex-column">
         <!-- Main Content -->
@@ -59,63 +52,55 @@
           <!-- Begin Page Content -->
           <div class="container-fluid">
             <!-- Page Heading -->
-            <h4 class="font-weight-bold">How to use</h4>
-            <li>
-              room name 에 입장하고자 하는 conferenceRoom 이름을 넣고 Enter 클릭시 해당하는 conference Room 에 접속.
-            </li>
-            <li>
-              아무것도 넣지 않을시 'remon' 이라는 이름의 conference Room 에 접속.
-            </li>
-            <li>
-                Leave 클릭시 방을 떠납니다.
-            </li>
             <li>
               Open the same
               <a href="./conferenceList.html" target="_blank">site</a> on
               other tab or browser. Then click on channel you created in the
               channel list.
             </li>
-            <li>
-              Source code:
-              <a
-                href="https://github.com/RemoteMonster/web-sdk/blob/master/examples/full/conference.html"
-                target="_blank"
-                >github page</a
-              >
-            </li>
             <br />
-
             <!-- Content Row -->
             <div class="row">
-
-              <div class="col-xl-4 col-lg-5">
-                <div class="card shadow mb-4">
+              <!-- 참여자 화면 -->
+              <div style="width: 1120px; height: 840px;">
+                <div class="card shadow mb-4" >
                   <!-- Card Header - Dropdown -->
-                  <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
-                  >
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">
-                      Other Videos
+                      참여자 화면
                     </h6>
                   </div>
                   <!-- Card Body -->
                   <div class="card-body">
                     <main class="text-center">
-                      <div class="row" style="width:250px;" id="otherVideos">
+                      <div id="otherVideos">
+                          <div class="row" style="border: 3px solid blue;">
+                              <div class="col" id="room1" style="border: 3px solid red;">1-1</div>
+                              <div class="col" id="room2" style="border: 3px solid red;">1-2</div>
+                              <div class="col" id="room3" style="border: 3px solid red;">1-3</div>
+                          </div>
+                          <div class="row" style="border: 3px solid blue;">
+                              <div class="col" id="room4" style="border: 3px solid red;">2-1</div>
+                              <div class="col" id="room5" style="border: 3px solid red;">2-2</div>
+                              <div class="col" id="room6" style="border: 3px solid red;">3-3</div>
+                          </div>
+                          <div class="row" style="border: 3px solid blue;">
+                              <div class="col" id="room7" style="border: 3px solid red;">3-1</div>
+                              <div class="col" id="room8" style="border: 3px solid red;">3-2</div>
+                              <div class="col" id="room9" style="border: 3px solid red;">3-3</div>
+                          </div>
                       </div>
                     </main>
                   </div>
                 </div>
               </div>
-              <div class="col-xl-8 col-lg-7">
+              <!-- 참여자 화면 -->
+              <!-- 강사 화면-->
+              <div style="width: 720px; height: 840px;">
                 <div class="card shadow mb-4">
                   <!-- Card Header - Dropdown -->
-                  <div
-                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
-                  >
-                    <h6 class="m-0 font-weight-bold text-primary">
-                      Local Video
-                    </h6>
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">강사 화면</h6>
                   </div>
                   <!-- Card Body -->
                   <div class="card-body">
@@ -143,22 +128,19 @@
                         placeholder="room name"
                         autofocus
                       />
-                      <a
-                        id="enterBtn"
-                        href="#"
-                        class="btn btn-primary btn-user btn-block text-center"
-                      >
-                        Enter
+                      <a id="enterBtn" href="#" class="btn btn-primary btn-user btn-block text-center">
+                        방송시작
                       </a>
+                      <button id="pauseLocalVideoButton"  type="button" class="btn  btn-secondary btn-block text-center off">일시정지</button>
+                      <button id="muteLocalAudioButton"  type="button"  class="btn  btn-secondary btn-block text-center off">음소거</button>
                     </main>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
+          <!-- 강사 화면-->
           <!-- /.container-fluid -->
-
           <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -166,6 +148,22 @@
           <!-- The webrtc adapter is required for browser compatibility -->
           <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk"></script>
+          <script>
+            const members ={};
+            const memberNames = ['허민훈', '문영원', '문수빈', '강영진', '정은성', '남정남', '서정화', '송진경', '임성호'];
+            const memberIds = ['minhoon1@samsung.com','yw.moon@samsung.com','subin@samsung.com','yj.kang@samsung.com','esjeong@samsung.com','namnam@samsung.com','jeonghwa@samsung.com','jinKyung@samsung.com','sungho.lim@samsung.com'];
+            const memberRooms = [false, false, false, false, false, false, false, false, false];
+
+            function getEmptyRoom() {
+                for (let i = 0; i < memberRooms.length; i++) {
+                    if(!memberRooms[i]) {
+	                    memberRooms[i]=true;
+                        return i+1;
+                    }
+                }
+                return -1;
+            }
+          </script>
           <!-- <script src="http://localhost:10001/remon.js"></script> -->
           <script>
             const enterBtn = document.querySelector("#enterBtn");
@@ -178,8 +176,9 @@
             let roomName = '';
             let currentRoom=[];
             const rooms = [];
-            const key = "1234567890";
-            const serviceId = "SERVICEID1";
+            const key = "3e8fc19f18cd392e0a6be1d7dc79fc9e0a870e479f9c973d44538b04c0555913";
+            const serviceId = "0a928c32-cc60-4e3f-87c1-e29471a2e3fd";
+
             // please register your own service key from remotemonster site.
             let config = {
               credential: {
@@ -246,14 +245,35 @@
                             Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
                             config.view.remote = `#${newVideo.id}`
                             newVideo.remon = new Remon({ config })
-                            otherVideos.appendChild(newVideo)
+                            //otherVideos.appendChild(newVideo)
+
+                            const roomNumber = getEmptyRoom();
+                            const memberName = memberNames[roomNumber];
+                            const memberId = memberIds[roomNumber];
+                            members[result.channel.id] = {};
+	                        members[result.channel.id].room = roomNumber;
+                            members[result.channel.id].name = memberName;
+                            members[result.channel.id].id = memberId;
+
+                            const memberVideo = document.querySelector("#room"+roomNumber);
+                            const memberInfo = document.querySelector('#room-template').innerHTML
+	                            .replace("{roomNumber}", roomNumber)
+                                .replace("{memberName}", memberName)
+                                .replace("{memberId}", memberId)
+                                .replace("{channelId}",result.channel.id);
+                            memberVideo.innerHTML = memberInfo;
+                            memberVideo.appendChild(newVideo);
                             newVideo.remon.joinCast(newVideo.id.replace("-",":"))
                         }
                       break;
                     case 'leave':
                         if(currentRoom[result.channel.id] && result.channel.id !== remon.getChannelId()){
-                          let video = document.getElementById(result.channel.id.replace(":","-"));
-                          otherVideos.removeChild(video);
+                          //let video = document.getElementById(result.channel.id.replace(":","-"));
+                          //otherVideos.removeChild(video);
+                          const roomNumber = members[result.channel.id].room;
+                          let video = document.querySelector('#room'+roomNumber);
+                          memberRooms[roomNumber-1]=false;
+                          video.innerHTML = "입장대기";
                           delete currentRoom[result.channel.id]
                         }
                       break;
@@ -268,7 +288,7 @@
             async function start() {
               if (isConnected) {
                 isConnected = false;
-                document.querySelector('#enterBtn').innerHTML = "Enter";
+                document.querySelector('#enterBtn').innerHTML = "방송시작";
                 Object.keys(currentRoom).forEach(function(id){
                   if( id !== remon.getChannelId()){
                     let video = document.getElementById(id.replace(":","-"));
@@ -284,7 +304,7 @@
                   ? selectedRoom.value
                   : 'remon';
                 isConnected = true;
-                document.querySelector('#enterBtn').innerHTML = "leave";
+                document.querySelector('#enterBtn').innerHTML = "방송종료";
 
                 await remon.createRoom(roomName)
                 let participants = await remon.fetchRooms(roomName);
@@ -303,15 +323,10 @@
                 })
               }
             }
-
-
-
             function createDummyRemonForSearchLoop() {
               if (remon) remon.close();
               remon = new Remon({ config, listener });
             }
-
-
             enterBtn.addEventListener("click",
               evt => {
                 start();
@@ -319,48 +334,51 @@
               },
               false
             );
-
-
-
           </script>
         </div>
         <!-- End of Main Content -->
-
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-          <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-              <span
-                >Copyright &copy;
-                <a href="https://remotemonster.com">RemoteMonster</a> 2020</span
-              >
-            </div>
-          </div>
-        </footer>
-        <!-- End of Footer -->
       </div>
       <!-- End of Content Wrapper -->
     </div>
     <!-- End of Page Wrapper -->
     <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-      <i class="fas fa-angle-up"></i>
-    </a>
-
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
     <!-- Core plugin JavaScript-->
     <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
-
     <script>
-      $(document).ready(function() {
-        $("#accordionSidebar").load("nav.html");
+      $('#pauseLocalVideoButton').on('click', function () {
+        if($(this).hasClass("off")) {
+	        remon.pauseLocalVideo(true);
+	        $(this).removeClass("off");
+	        $(this).html('방송재개');
+	        return;
+        }
+        remon.pauseLocalVideo(false);
+        $(this).addClass("off");
+        $(this).html('일시정지');
       });
+      $('#muteLocalAudioButton').on('click', function () {
+	      if($(this).hasClass("off")) {
+		      remon.muteLocalAudio(true);
+		      $(this).removeClass("off");
+		      $(this).html('음소거 해제');
+		      return;
+	      }
+	      remon.muteLocalAudio(false);
+	      $(this).addClass("off");
+	      $(this).html('음소거');
+      });
+    </script>
+    <script id="room-template" type="text/template">
+        <div class="member-info text-left {channelId}">
+            <div class="roomNumber btn-light" style="font-size: 12px;">{roomNumber}번</div>
+            <div class="member-name btn-light" style="font-size: 12px;">회원명: {memberName}</div>
+            <div class="member-id btn-light" style="font-size: 12px;">회원ID: {memberId}</div>
+        </div>
     </script>
   </body>
 </html>
