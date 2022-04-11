@@ -176,8 +176,10 @@
             let roomName = '';
             let currentRoom=[];
             const rooms = [];
-            const key = "3e8fc19f18cd392e0a6be1d7dc79fc9e0a870e479f9c973d44538b04c0555913";
-            const serviceId = "0a928c32-cc60-4e3f-87c1-e29471a2e3fd";
+            // const key = "3e8fc19f18cd392e0a6be1d7dc79fc9e0a870e479f9c973d44538b04c0555913";
+            // const serviceId = "0a928c32-cc60-4e3f-87c1-e29471a2e3fd";
+            const serviceId = "7530a1f6-65d0-48c9-9de3-0870bc39d0d5";
+            const key = "8419a332d084856adb575cf950e4c13dfb6f6f863332a410a61ec8fd2e6dc655";
 
             // please register your own service key from remotemonster site.
             let config = {
@@ -197,7 +199,7 @@
                       height: { min: 240, max: 480 },
                       frameRate: { min: 8, max: 30 },
                       maxBandwidth: 500,
-                      codec: 'H264'
+                      codec: 'VP8'
                   },
                   audio: true
               }
@@ -381,6 +383,26 @@
             <div class="member-name btn-light" style="font-size: 12px;">회원명: {memberName}</div>
             <div class="member-id btn-light" style="font-size: 12px;">회원ID: {memberId}</div>
         </div>
+    </script>
+    <script>
+        import {initializeApp} from 'firebase/app';
+        import {getDatabase} from "firebase/database";
+
+        const firebaseConfig = {
+	        apiKey: "AIzaSyCyOgIFLjXMzU31TDPq7zlQVVa3WQLZvHA",
+	        authDomain: "moveat-2582b.firebaseapp.com",
+	        databaseURL: "https://moveat-2582b.firebaseio.com",
+	        projectId: "moveat-2582b",
+	        storageBucket: "moveat-2582b.appspot.com",
+	        messagingSenderId: "916768390146",
+	        appId: "1:916768390146:web:68ca454b7a555b436abb1b",
+	        measurementId: "G-NCZJ580Q9Z"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = app.firestore();
+
+
     </script>
   </body>
 </html>
