@@ -45,36 +45,52 @@
             >
               <i class="fa fa-bars"></i>
             </button>
-            <h3 class="h3 mb-4 text-gray-800">회원 화면</h3>
+            <h3 class="h3 mb-4 text-gray-800">강사 화면</h3>
           </nav>
           <!-- End of Topbar -->
 
           <!-- Begin Page Content -->
           <div class="container-fluid">
             <!-- Page Heading -->
+            <li>
+              Open the same
+              <a href="./conference-admin.html" target="_blank">site</a> on
+              other tab or browser. Then click on channel you created in the
+              channel list.
+            </li>
             <br />
             <!-- Content Row -->
             <div class="row">
-              <!-- 강사 화면 -->
-                <div style="width: 720px; height: 840px;">
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">강사 화면</h6>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <div id="lecture"></div>
-                        </div>
-                    </div>
-                </div>
               <!-- 참여자 화면 -->
-              <!-- 내 화면-->
+              <div style="width: 1120px; height: 840px;">
+                <div class="card shadow mb-4" >
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                      참여자 화면
+                    </h6>
+                  </div>
+                  <!-- Card Body -->
+                  <div class="card-body">
+                    <main class="text-center">
+                      <div id="otherVideos">
+                          <div class="row">
+                              <div class="col" id="room1" style="border: 1px solid black;width:367px;height:500px;">1번 - 입장대기</div>
+                              <div class="col" id="room2" style="border: 1px solid black;width:367px;height:500px;">2번 - 입장대기</div>
+                              <div class="col" id="room3" style="border: 1px solid black;width:367px;height:500px;">3번 - 입장대기</div>
+                          </div>
+                      </div>
+                    </main>
+                  </div>
+                </div>
+              </div>
+              <!-- 참여자 화면 -->
+              <!-- 강사 화면-->
               <div style="width: 720px; height: 840px;">
                 <div class="card shadow mb-4">
                   <!-- Card Header - Dropdown -->
                   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">내 화면</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">강사 화면</h6>
                   </div>
                   <!-- Card Body -->
                   <div class="card-body">
@@ -103,90 +119,92 @@
                         autofocus
                       />
                       <a id="enterBtn" href="#" class="btn btn-primary btn-user btn-block text-center">
-                        라이브클래스 입장
+                        방송시작
                       </a>
-                      <button id="pauseLocalVideoButton"  type="button" class="btn  btn-secondary btn-block text-center off">내 화면 송출하지 않기</button>
+                      <button id="pauseLocalVideoButton"  type="button" class="btn  btn-secondary btn-block text-center off">일시정지</button>
                       <button id="muteLocalAudioButton"  type="button"  class="btn  btn-secondary btn-block text-center off">음소거</button>
                     </main>
                   </div>
                 </div>
               </div>
-              <!-- 내 화면-->
             </div>
           </div>
+          <!-- 강사 화면-->
           <!-- /.container-fluid -->
-          <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-          />
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
           <!-- The webrtc adapter is required for browser compatibility -->
           <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-          <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk"></script>
           <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
           <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
-            <script>
-		        firebase.initializeApp(
-			        {
-				        apiKey: "AIzaSyCyOgIFLjXMzU31TDPq7zlQVVa3WQLZvHA",
-				        authDomain: "moveat-2582b.firebaseapp.com",
-				        databaseURL: "https://moveat-2582b.firebaseio.com",
-				        projectId: "moveat-2582b",
-				        storageBucket: "moveat-2582b.appspot.com",
-				        messagingSenderId: "916768390146",
-				        appId: "1:916768390146:web:68ca454b7a555b436abb1b",
-				        measurementId: "G-NCZJ580Q9Z"
-			        }
-		        );
-		        const db = firebase.firestore();
-		        function updateFirestore (ownerId, roomName, state) {
-			        db.collection("livecoach")
-				        .doc("roominfo")
-				        .set({
-					        ownerId: ownerId,
-					        roomName: roomName,
-					        state: 2
-				        });
-		        };
+          <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk"></script>
+      <!--<script src="./js/fireStoreConfig.js" type="module"></script>-->
+          <script>
+              firebase.initializeApp(
+                  {
+                      apiKey: "AIzaSyCyOgIFLjXMzU31TDPq7zlQVVa3WQLZvHA",
+                      authDomain: "moveat-2582b.firebaseapp.com",
+                      databaseURL: "https://moveat-2582b.firebaseio.com",
+                      projectId: "moveat-2582b",
+                      storageBucket: "moveat-2582b.appspot.com",
+                      messagingSenderId: "916768390146",
+                      appId: "1:916768390146:web:68ca454b7a555b436abb1b",
+                      measurementId: "G-NCZJ580Q9Z"
+                  }
+              );
+              const db = firebase.firestore();
+              function updateFirestore (ownerId, roomName, state) {
+	              db.collection("livecoach")
+		              .doc("test")
+		              .set({
+			              ownerId: ownerId,
+			              roomName: roomName,
+			              state: 2
+		              });
+              };
 
-		        async function getNickNameFromFireStore(id) {
-			        let nickName = "";
-			        await db.collection("livecoach")
-				        .doc("roominfo")
-				        .get().then(
-					        (doc) => {
-						        if (doc.exists) {
-							        nickName = doc.get("userList")[id];
-						        } else {
-							        console.log("Waiting For a sec!")
-							        setTimeout((id) => {
-								        nickName = getNickNameFromFireStore(id);
-							        }, 1000);
-						        }
-					        }
-				        ).catch((error) => {
-					        console.log("Error getting document: ", error);
-				        });
-			        return nickName;
-		        }
+              async function getNickNameFromFireStore(id) {
+	              let nickName = "";
+	              await db.collection("livecoach")
+		              .doc("test")
+		              .get().then((doc) => {
+				              if (doc.get("userList")[id]) {
+                                nickName = doc.get("userList")[id];
+                                console.log("################# NickName: "+nickName+"#################");
+				              } else {
+					              console.log("################# Waiting For a second!! #################");
+					              setTimeout((id) => {
+						              nickName = getNickNameFromFireStore(id);
+					              }, 1000);
+				              }
+			              }
+		              ).catch((error) => {
+			              console.log("######### Error getting document: #########", error);
+			              setTimeout((id) => {
+				              nickName = getNickNameFromFireStore(id);
+			              }, 1000);
+		              });
+	              alert("returned:"+nickName);
+	              return nickName;
+              }
 
-		        async function addUserList (userId, nickName) {
-			        await db.collection("livecoach")
-				        .doc("roominfo")
-				        .update(
-					        {
-						        ["userList."+userId] : nickName
-					        });
-		        }
+              async function addUserList (userId, nickName) {
+              	await db.collection("livecoach")
+                  .doc("test")
+                  .update(
+                  {
+	                  ["userList."+userId] : nickName
+                  });
+              }
 
-		        async function deleteUserList (userId) {
-			        await db.collection("livecoach")
-				        .doc("roominfo")
-				        .update(
-					        {
-						        ["userList."+userId] : firebase.firestore.FieldValue.delete()
-					        });
-		        }
-            </script>
+              async function deleteUserList (userId) {
+	              await db.collection("livecoach")
+		              .doc("test")
+		              .update(
+			              {
+				              ["userList."+userId] : firebase.firestore.FieldValue.delete()
+			              });
+              }
+        </script>
           <script>
             const members ={};
             const memberNames = ['허민훈', '문영원', '문수빈', '강영진', '정은성', '남정남', '서정화', '송진경', '임성호'];
@@ -205,6 +223,7 @@
           </script>
           <!-- <script src="http://localhost:10001/remon.js"></script> -->
           <script>
+
             const enterBtn = document.querySelector("#enterBtn");
             const otherVideos= document.getElementById('otherVideos');
             const selectedRoom = document.getElementById(
@@ -238,7 +257,7 @@
                       height: { min: 240, max: 480 },
                       frameRate: { min: 8, max: 30 },
                       maxBandwidth: 500,
-                      codec: 'H264'
+                      codec: 'VP8'
                   },
                   audio: true
               }
@@ -249,17 +268,20 @@
                             muted : true,
                             controls: true,
                             playsinline: true,
-                            style :"z-index:1;background: rgba(0, 0, 0, 0.5); width: 678px;"
+                            style :"z-index:1;background: rgba(0, 0, 0, 0.5); width: 300px;"
                           }
 
             const listener = {
+              onCreate(chid) {
+	              console.log(`remon.listener.onConnect ${chid} at listener`);
+              },
               onConnect(chid) {
                 console.log(`remon.listener.onConnect ${chid} at listener`);
               },
               onComplete() {
                 console.log(`remon.listener.onComplete: ${remon.getChannelId()} `);
                 currentRoom[remon.getChannelId()] = true;
-                addUserList(remon.getChannelId(), "쵝오다운");
+                updateFirestore(remon.getChannelId(), remon.getChannelId().split(":")[0], 2);
               },
               onDisconnectChannel() {
                 // is called when other peer hang up.
@@ -269,6 +291,7 @@
               onClose() {
                 // is called when remon.close() method is called.
                 console.log(`remon.listener.onClose: ${remon.getChannelId()}`);
+	            updateFirestore(remon.getChannelId(), remon.getChannelId().split(":")[0], 0);
               },
               onError(error) {
                 console.log(`remon.listener.onError: ${remon.getChannelId()} ${error}`);
@@ -276,27 +299,65 @@
               onStat(result) {
                 // console.log(`EVENT FIRED: onStat:  ${JSON.stringify(result)}`);
               },
-              onRoomEvent(result){
-                //join
-                  switch (result.event) {
-                    case 'join':
-                        /* join */
-                      break;
-                    case 'leave':
-                      /* levae */
-                      break;
-                  }
-                console.log(`EVENT FIRED: onRoomEvent channel Id : ${remon.getChannelId()}`)
-                console.log(`EVENT FIRED: onRoomEvent: ${JSON.stringify(result)}`)
+              async onRoomEvent(result) {
+	              //join
+	              switch (result.event) {
+		              case 'join':
+			              if (!currentRoom[result.channel.id]) {
+				              currentRoom[result.channel.id] = true;
+				              let newVideo = document.createElement('video')
+				              videoAttrs.id = result.channel.id.replace(":", "-");
+				              Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
+				              config.view.remote = `#${newVideo.id}`
+				              newVideo.remon = new Remon({config})
+				              //otherVideos.appendChild(newVideo)
+				              const roomNumber = getEmptyRoom();
+				              let memberName = '';
+				              let fireCount = 0;
+				              const daun = db.collection("livecoach").doc("test").onSnapshot((doc)=> {
+                                  console.log("#################### some one join ####################");
+                                  if(doc.get("userList")[result.channel.id]) {
+	                                  console.log("#################### user identified ####################");
+                                      memberName = doc.get("userList")[result.channel.id];
+	                                  members[result.channel.id] = {};
+	                                  members[result.channel.id].room = roomNumber;
+	                                  members[result.channel.id].name = memberName;
+	                                  const memberVideo = document.querySelector("#room" + roomNumber);
+	                                  const memberInfo = document.querySelector('#room-template').innerHTML
+		                                  .replace("{roomNumber}", roomNumber)
+		                                  .replace("{memberName}", memberName)
+		                                  .replace("{channelId}", result.channel.id);
+	                                  memberVideo.innerHTML = memberInfo;
+	                                  memberVideo.appendChild(newVideo);
+	                                  newVideo.remon.joinCast(newVideo.id.replace("-", ":"))
+	                                  daun();
+                                  }
+					              console.log("#################### completed ####################");
+				              })
+			              }
+			              break;
+		              case 'leave':
+			              if (currentRoom[result.channel.id] && result.channel.id !== remon.getChannelId()) {
+				              //let video = document.getElementById(result.channel.id.replace(":","-"));
+				              //otherVideos.removeChild(video);
+				              const roomNumber = members[result.channel.id].room;
+				              let video = document.querySelector('#room' + roomNumber);
+				              memberRooms[roomNumber - 1] = false;
+				              video.innerHTML = roomNumber + "번 - 입장대기";
+				              delete currentRoom[result.channel.id]
+			              }
+			              break;
+	              }
+	              console.log(`EVENT FIRED: onRoomEvent channel Id : ${remon.getChannelId()}`)
+	              console.log(`EVENT FIRED: onRoomEvent: ${JSON.stringify(result)}`)
               }
             };
-
             createDummyRemonForSearchLoop();
 
             async function start() {
               if (isConnected) {
                 isConnected = false;
-                document.querySelector('#enterBtn').innerHTML = "라이브클래스 입장";
+                document.querySelector('#enterBtn').innerHTML = "방송시작";
                 Object.keys(currentRoom).forEach(function(id){
                   if( id !== remon.getChannelId()){
                     let video = document.getElementById(id.replace(":","-"));
@@ -308,29 +369,14 @@
                 })
                 remon.close()
               } else {
-                const defaultRoomName = 'shpLiveClass';
-                roomName = selectedRoom.value ? selectedRoom.value : defaultRoomName;
+                roomName = selectedRoom.value
+                  ? selectedRoom.value
+                  : 'shpadmin';
                 isConnected = true;
-                document.querySelector('#enterBtn').innerHTML = "라이브클래스 퇴장";
-                await remon.createRoom(roomName)
-                let participants = await remon.fetchRooms(roomName);
-                let flag = true;
-                participants.forEach(async function(participant){
-                  if(flag&&!currentRoom[participant.id]){
-                          flag=false;
-                          currentRoom[participant.id] = true;
-                          let newVideo = document.createElement('video');
-                          videoAttrs.id =  participant.id.replace(":","-");
-                          Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
-                          config.view.remote = `#${newVideo.id}`
-                          newVideo.remon = new Remon({ config })
-                          let lectureVideo = document.querySelector('#lecture');
-                          lectureVideo.appendChild(newVideo);
-                          //otherVideos.appendChild(newVideo)
-                          await newVideo.remon.joinCast(newVideo.id.replace("-",":"));
-                        }
-                })
+                document.querySelector('#enterBtn').innerHTML = "방송종료";
+                await remon.createRoom(roomName);
               }
+
             }
             function createDummyRemonForSearchLoop() {
               if (remon) remon.close();
@@ -363,12 +409,12 @@
         if($(this).hasClass("off")) {
 	        remon.pauseLocalVideo(true);
 	        $(this).removeClass("off");
-	        $(this).html('내 화면 송출하기');
+	        $(this).html('방송재개');
 	        return;
         }
         remon.pauseLocalVideo(false);
         $(this).addClass("off");
-        $(this).html('내 화면 송출하지 않기');
+        $(this).html('일시정지');
       });
       $('#muteLocalAudioButton').on('click', function () {
 	      if($(this).hasClass("off")) {
@@ -384,11 +430,11 @@
     </script>
     <script id="room-template" type="text/template">
         <div class="member-info text-left {channelId}">
-            <div class="roomNumber btn-light" style="font-size: 12px;">{roomNumber}번 강의실</div>
+            <div class="roomNumber btn-light" style="font-size: 12px;">{roomNumber}번</div>
             <div class="member-name btn-light" style="font-size: 12px;">회원명: {memberName}</div>
-            <div class="member-id btn-light" style="font-size: 12px;">회원ID: {memberId}</div>
-            <div style="height: 20%">&nbsp;</div>
         </div>
     </script>
+
   </body>
 </html>
+

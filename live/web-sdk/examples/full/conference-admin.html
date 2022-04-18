@@ -45,7 +45,7 @@
             >
               <i class="fa fa-bars"></i>
             </button>
-            <h3 class="h3 mb-4 text-gray-800">강사 어드민 화면</h3>
+            <h3 class="h3 mb-4 text-gray-800">강사 화면</h3>
           </nav>
           <!-- End of Topbar -->
 
@@ -75,14 +75,14 @@
                     <main class="text-center">
                       <div id="otherVideos">
                           <div class="row">
-                              <div class="col" id="room1" style="border: 1px solid black;width:367px;height:290px;">1번 - 입장대기</div>
-                              <div class="col" id="room2" style="border: 1px solid black;width:367px;height:290px;">2번 - 입장대기</div>
-                              <div class="col" id="room3" style="border: 1px solid black;width:367px;height:290px;">3번 - 입장대기</div>
+                              <div class="col" id="room1" style="border: 1px solid black;width:367px;height:500px;">1번 - 입장대기</div>
+                              <div class="col" id="room2" style="border: 1px solid black;width:367px;height:500px;">2번 - 입장대기</div>
+                              <div class="col" id="room3" style="border: 1px solid black;width:367px;height:500px;">3번 - 입장대기</div>
                           </div>
                           <div class="row">
-                              <div class="col" id="room4" style="border: 1px solid black;width:367px;height:290px;">4번 - 입장대기</div>
-                              <div class="col" id="room5" style="border: 1px solid black;width:367px;height:290px;">5번 - 입장대기</div>
-                              <div class="col" id="room6" style="border: 1px solid black;width:367px;height:290px;">6번 - 입장대기</div>
+                              <div class="col" id="room4" style="border: 1px solid black;width:367px;height:500px;">4번 - 입장대기</div>
+                              <div class="col" id="room5" style="border: 1px solid black;width:367px;height:500px;">5번 - 입장대기</div>
+                              <div class="col" id="room6" style="border: 1px solid black;width:367px;height:500px;">6번 - 입장대기</div>
                           </div>
                           <div class="row">
                               <div class="col" id="room7" style="border: 1px solid black;width:367px;height:290px;">7번 - 입장대기</div>
@@ -141,13 +141,80 @@
           </div>
           <!-- 강사 화면-->
           <!-- /.container-fluid -->
-          <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-          />
+          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
           <!-- The webrtc adapter is required for browser compatibility -->
           <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+          <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+          <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk"></script>
+      <!--<script src="./js/fireStoreConfig.js" type="module"></script>-->
+          <script>
+              firebase.initializeApp(
+                  {
+                      apiKey: "AIzaSyCyOgIFLjXMzU31TDPq7zlQVVa3WQLZvHA",
+                      authDomain: "moveat-2582b.firebaseapp.com",
+                      databaseURL: "https://moveat-2582b.firebaseio.com",
+                      projectId: "moveat-2582b",
+                      storageBucket: "moveat-2582b.appspot.com",
+                      messagingSenderId: "916768390146",
+                      appId: "1:916768390146:web:68ca454b7a555b436abb1b",
+                      measurementId: "G-NCZJ580Q9Z"
+                  }
+              );
+              const db = firebase.firestore();
+              function updateFirestore (ownerId, roomName, state) {
+	              db.collection("livecoach")
+		              .doc("test")
+		              .set({
+			              ownerId: ownerId,
+			              roomName: roomName,
+			              state: 2
+		              });
+              };
+
+              async function getNickNameFromFireStore(id) {
+	              let nickName = "";
+	              await db.collection("livecoach")
+		              .doc("test")
+		              .get().then((doc) => {
+				              if (doc.get("userList")[id]) {
+                                nickName = doc.get("userList")[id];
+                                console.log("################# NickName: "+nickName+"#################");
+				              } else {
+					              console.log("################# Waiting For a second!! #################");
+					              setTimeout((id) => {
+						              nickName = getNickNameFromFireStore(id);
+					              }, 1000);
+				              }
+			              }
+		              ).catch((error) => {
+			              console.log("######### Error getting document: #########", error);
+			              setTimeout((id) => {
+				              nickName = getNickNameFromFireStore(id);
+			              }, 1000);
+		              });
+	              alert("returned:"+nickName);
+	              return nickName;
+              }
+
+              async function addUserList (userId, nickName) {
+              	await db.collection("livecoach")
+                  .doc("test")
+                  .update(
+                  {
+	                  ["userList."+userId] : nickName
+                  });
+              }
+
+              async function deleteUserList (userId) {
+	              await db.collection("livecoach")
+		              .doc("test")
+		              .update(
+			              {
+				              ["userList."+userId] : firebase.firestore.FieldValue.delete()
+			              });
+              }
+        </script>
           <script>
             const members ={};
             const memberNames = ['허민훈', '문영원', '문수빈', '강영진', '정은성', '남정남', '서정화', '송진경', '임성호'];
@@ -166,6 +233,7 @@
           </script>
           <!-- <script src="http://localhost:10001/remon.js"></script> -->
           <script>
+
             const enterBtn = document.querySelector("#enterBtn");
             const otherVideos= document.getElementById('otherVideos');
             const selectedRoom = document.getElementById(
@@ -223,6 +291,7 @@
               onComplete() {
                 console.log(`remon.listener.onComplete: ${remon.getChannelId()} `);
                 currentRoom[remon.getChannelId()] = true;
+                updateFirestore(remon.getChannelId(), remon.getChannelId().split(":")[0], 2);
               },
               onDisconnectChannel() {
                 // is called when other peer hang up.
@@ -232,6 +301,7 @@
               onClose() {
                 // is called when remon.close() method is called.
                 console.log(`remon.listener.onClose: ${remon.getChannelId()}`);
+	            updateFirestore(remon.getChannelId(), remon.getChannelId().split(":")[0], 0);
               },
               onError(error) {
                 console.log(`remon.listener.onError: ${remon.getChannelId()} ${error}`);
@@ -239,55 +309,59 @@
               onStat(result) {
                 // console.log(`EVENT FIRED: onStat:  ${JSON.stringify(result)}`);
               },
-              onRoomEvent(result){
-                //join
-                  switch (result.event) {
-                    case 'join':
-                        if(!currentRoom[result.channel.id]){
-                          currentRoom[result.channel.id] = true;
-                            let newVideo = document.createElement('video')
-                            videoAttrs.id = result.channel.id.replace(":","-");
-                            Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
-                            config.view.remote = `#${newVideo.id}`
-                            newVideo.remon = new Remon({ config })
-                            //otherVideos.appendChild(newVideo)
-
-                            const roomNumber = getEmptyRoom();
-                            const memberName = memberNames[roomNumber];
-                            const memberId = memberIds[roomNumber];
-                            members[result.channel.id] = {};
-	                        members[result.channel.id].room = roomNumber;
-                            members[result.channel.id].name = memberName;
-                            members[result.channel.id].id = memberId;
-
-                            const memberVideo = document.querySelector("#room"+roomNumber);
-                            const memberInfo = document.querySelector('#room-template').innerHTML
-	                            .replace("{roomNumber}", roomNumber)
-                                .replace("{memberName}", memberName)
-                                .replace("{memberId}", memberId)
-                                .replace("{channelId}",result.channel.id);
-                            memberVideo.innerHTML = memberInfo;
-                            memberVideo.appendChild(newVideo);
-                            newVideo.remon.joinCast(newVideo.id.replace("-",":"))
-                        }
-                      break;
-                    case 'leave':
-                        if(currentRoom[result.channel.id] && result.channel.id !== remon.getChannelId()){
-                          //let video = document.getElementById(result.channel.id.replace(":","-"));
-                          //otherVideos.removeChild(video);
-                          const roomNumber = members[result.channel.id].room;
-                          let video = document.querySelector('#room'+roomNumber);
-                          memberRooms[roomNumber-1]=false;
-                          video.innerHTML = roomNumber+"번 - 입장대기";
-                          delete currentRoom[result.channel.id]
-                        }
-                      break;
-                  }
-                console.log(`EVENT FIRED: onRoomEvent channel Id : ${remon.getChannelId()}`)
-                console.log(`EVENT FIRED: onRoomEvent: ${JSON.stringify(result)}`)
+              async onRoomEvent(result) {
+	              //join
+	              switch (result.event) {
+		              case 'join':
+			              if (!currentRoom[result.channel.id]) {
+				              currentRoom[result.channel.id] = true;
+				              let newVideo = document.createElement('video')
+				              videoAttrs.id = result.channel.id.replace(":", "-");
+				              Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
+				              config.view.remote = `#${newVideo.id}`
+				              newVideo.remon = new Remon({config})
+				              //otherVideos.appendChild(newVideo)
+				              const roomNumber = getEmptyRoom();
+				              let memberName = '';
+				              let fireCount = 0;
+				              const daun = db.collection("livecoach").doc("test").onSnapshot((doc)=> {
+                                  console.log("#################### some one join ####################");
+                                  if(doc.get("userList")[result.channel.id]) {
+	                                  console.log("#################### user identified ####################");
+                                      memberName = doc.get("userList")[result.channel.id];
+	                                  members[result.channel.id] = {};
+	                                  members[result.channel.id].room = roomNumber;
+	                                  members[result.channel.id].name = memberName;
+	                                  const memberVideo = document.querySelector("#room" + roomNumber);
+	                                  const memberInfo = document.querySelector('#room-template').innerHTML
+		                                  .replace("{roomNumber}", roomNumber)
+		                                  .replace("{memberName}", memberName)
+		                                  .replace("{channelId}", result.channel.id);
+	                                  memberVideo.innerHTML = memberInfo;
+	                                  memberVideo.appendChild(newVideo);
+	                                  newVideo.remon.joinCast(newVideo.id.replace("-", ":"))
+	                                  daun();
+                                  }
+					              console.log("#################### completed ####################");
+				              })
+			              }
+			              break;
+		              case 'leave':
+			              if (currentRoom[result.channel.id] && result.channel.id !== remon.getChannelId()) {
+				              //let video = document.getElementById(result.channel.id.replace(":","-"));
+				              //otherVideos.removeChild(video);
+				              const roomNumber = members[result.channel.id].room;
+				              let video = document.querySelector('#room' + roomNumber);
+				              memberRooms[roomNumber - 1] = false;
+				              video.innerHTML = roomNumber + "번 - 입장대기";
+				              delete currentRoom[result.channel.id]
+			              }
+			              break;
+	              }
+	              console.log(`EVENT FIRED: onRoomEvent channel Id : ${remon.getChannelId()}`)
+	              console.log(`EVENT FIRED: onRoomEvent: ${JSON.stringify(result)}`)
               }
             };
-
             createDummyRemonForSearchLoop();
 
             async function start() {
@@ -307,23 +381,10 @@
               } else {
                 roomName = selectedRoom.value
                   ? selectedRoom.value
-                  : 'remon';
+                  : 'shpadmin';
                 isConnected = true;
                 document.querySelector('#enterBtn').innerHTML = "방송종료";
-                await remon.createRoom(roomName)
-                let participants = await remon.fetchRooms(roomName);
-                participants.forEach(async function(participant){
-                  if(!currentRoom[participant.id]){
-                          currentRoom[participant.id] = true;
-                            let newVideo = document.createElement('video');
-                            videoAttrs.id =  participant.id.replace(":","-");
-                            Object.keys(videoAttrs).forEach(key => newVideo.setAttribute(key, videoAttrs[key]))
-                            config.view.remote = `#${newVideo.id}`
-                            newVideo.remon = new Remon({ config })
-                            otherVideos.appendChild(newVideo)
-                            await newVideo.remon.joinCast(newVideo.id.replace("-",":"));
-                        }
-                })
+                await remon.createRoom(roomName);
               }
 
             }
@@ -381,29 +442,9 @@
         <div class="member-info text-left {channelId}">
             <div class="roomNumber btn-light" style="font-size: 12px;">{roomNumber}번</div>
             <div class="member-name btn-light" style="font-size: 12px;">회원명: {memberName}</div>
-            <div class="member-id btn-light" style="font-size: 12px;">회원ID: {memberId}</div>
         </div>
     </script>
-    <script>
-        import {initializeApp} from 'firebase/app';
-        import {getDatabase} from "firebase/database";
 
-        const firebaseConfig = {
-	        apiKey: "AIzaSyCyOgIFLjXMzU31TDPq7zlQVVa3WQLZvHA",
-	        authDomain: "moveat-2582b.firebaseapp.com",
-	        databaseURL: "https://moveat-2582b.firebaseio.com",
-	        projectId: "moveat-2582b",
-	        storageBucket: "moveat-2582b.appspot.com",
-	        messagingSenderId: "916768390146",
-	        appId: "1:916768390146:web:68ca454b7a555b436abb1b",
-	        measurementId: "G-NCZJ580Q9Z"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = app.firestore();
-
-
-    </script>
   </body>
 </html>
 
