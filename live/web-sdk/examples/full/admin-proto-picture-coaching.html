@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="RemoteMonster live media service demo" />
+    <title>SHP Live Class</title>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"/>
+    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" />
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@remotemonster/sdk"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="js/sb-admin-2.min.js"></script>
+<!--    <script src="../dist/hls.js"></script>-->
+    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+  </head>
+  <body id="page-top">
+    <div id="wrapper">
+      <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+          <h3 class="h3 mb-4 text-gray-800" style="padding-left: 20px; margin-top: 40px; margin-bottom: 40px;">SHP Live Class</h3>
+          <div class="container-fluid">
+            <div class="row justify-content-around">
+              <div style="width: 1120px; height: 840px;">
+                <div class="card shadow mb-4" >
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary text-center">참여자 화면</h6>
+                  </div>
+                  <div class="card-body justify-content-center" style="height: 600px">
+                    <main class="text-center">
+                      <div id="otherVideos">
+                          <div class="row justify-content-around">
+                              <div class="col text-center card" id="room1" style="width:360px;height:500px;">1번 - 입장대기</div>
+                              <div class="col text-center card" id="room2" style="width:360px;height:500px;">2번 - 입장대기</div>
+                              <div class="col text-center card" id="room3" style="width:360px;height:500px;">3번 - 입장대기</div>
+                          </div>
+                          <div class="row justify-content-around">
+                              <div class="col text-center card" id="room4" style="width:360px;height:500px;">4번 - 입장대기</div>
+                              <div class="col text-center card" id="room5" style="width:360px;height:500px;">5번 - 입장대기</div>
+                              <div class="col text-center card" id="room6" style="width:360px;height:500px;">6번 - 입장대기</div>
+                          </div>
+                          <div class="row justify-content-around">
+                              <div class="col text-center card" id="room7" style="width:360px;height:500px;">7번 - 입장대기</div>
+                              <div class="col text-center card" id="room8" style="width:360px;height:500px;">8번 - 입장대기</div>
+                              <div class="col text-center card" id="room9" style="width:360px;height:500px;">9번 - 입장대기</div>
+                          </div>
+                      </div>
+                    </main>
+                  </div>
+                </div>
+              </div>
+              <!-- 참여자 화면 -->
+              <!-- 강사 화면-->
+              <div style="width: 720px; height: 840px;">
+                <div class="card shadow mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary text-center">강사 화면</h6>
+                  </div>
+                  <div class="card-body" style="height: 600px">
+                    <main class="text-center">
+                      <video id="video" class="remote-video center w-300 h-300" autoplay playsinline style="z-index:1;background: rgba(0, 0, 0, 0.5); width: 100%;">
+                          <source id="src" src="" type="application/x-mpegURL">
+                      </video>
+                      <h6 id="waitingTv" class="m-0 font-weight-bold text-primary" style="z-index:3; position: absolute;bottom: 55px;right:45px; visibility: hidden;">waiting</h6>
+                      <input id="streamingUrl" class="form-control text-left" type="text" placeholder="네이버 라이브 스테이션에서 확인한 URL을 입력해 주세요." autofocus/>
+                      <button id="streamingReady"  type="button"  class="btn btn-outline-success btn-block text-center">강의 영상 보기</button>
+                      <button id="classOpen"  type="button" class="btn btn-outline-warning btn-user btn-block text-center">강의실 OPEN</button>
+                      <button id="muteLocalAudioButton"  type="button"  class="btn btn-outline-dark btn-block text-center">강사 목소리 송출하지 않기</button>
+                      <button id="coachingReady"  type="button"  class="btn btn-outline-dark btn-block text-center">개별 코칭방 열기</button>
+                    </main>
+                  </div>
+                </div>
+              </div>
+              <!-- 강사 화면-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <video id="myVideo" autoplay muted controls playsinline style="visibility: hidden"></video>
+<script>
+	/* firebase Configuration */
+	firebase.initializeApp(
+		{
+			apiKey: "AIzaSyCyOgIFLjXMzU31TDPq7zlQVVa3WQLZvHA",
+			authDomain: "moveat-2582b.firebaseapp.com",
+			projectId: "moveat-2582b",
+			appId: "1:916768390146:web:68ca454b7a555b436abb1b",
+		}
+	);
+</script>
+<script>
+    const fireBaseCollection = "livecoach";
+    const firebaseDoc = "roominfo";
+    const members = {};                                                                         // 회원 정보를 담는 Object
+    const classRoomEmpty = [false, false, false, false, false, false, false, false, false];     // 강의실 Occupied 여부
+    let classRoom = [];                                                                         // 강의실에 입장한 회원 리스트
+    let ownerId = '';                                                                           // Remon에서 부여하는 강사 식별ID
+    let roomName = 'shpLiveClass';                                                              // Remon Conference Room 이름, default: shpLiveClass
+    let remon;                                                                                  // remon sdk 객체
+    const db = firebase.firestore();                                                            // firestore 접근객체
+    const otherVideos= document.getElementById('otherVideos');
+
+    let config = {
+        credential: {
+            key: "8419a332d084856adb575cf950e4c13dfb6f6f863332a410a61ec8fd2e6dc655",
+            serviceId: "7530a1f6-65d0-48c9-9de3-0870bc39d0d5",
+            wsurl : "wss://signal.remotemonster.com/ws",
+            resturl : "https://signal.remotemonster.com/rest",
+        },
+        view: {
+            local: "#myVideo"
+        },
+        media: {
+            video: {
+                width: { min: 320, max: 640 },
+                height: { min: 240, max: 480 },
+                frameRate: { min: 8, max: 30 },
+                maxBandwidth: 500,
+                codec: 'H264'
+            },
+            audio: true
+        }
+    };
+    const videoAttrs = {
+        class : "remote-video center w-320 h-240",
+        autoplay : true,
+        muted : "muted",
+        controls: true,
+        playsinline: true,
+        style :"z-index:1;background: rgba(0, 0, 0, 0.5); width: 300px;"
+    }
+    const listener = {
+        onCreate(chid) { console.log(`remon.listener.onConnect ${chid} at listener`); },
+        onConnect(chid) { console.log(`remon.listener.onConnect ${chid} at listener`);},
+        onComplete() {
+            console.log(`remon.listener.onComplete: ${remon.getChannelId()} `);
+            classRoom[remon.getChannelId()] = true;
+            ownerId = remon.getChannelId();
+            roomName = remon.getChannelId().split(":")[0];
+            updateRoomInfo(remon.getChannelId(), remon.getChannelId().split(":")[0], 1);
+        },
+        onDisconnectChannel() { remon.close(); },
+        onClose() { console.log(`remon.listener.onClose: ${remon.getChannelId()}`);},
+        onError(error) {console.log(`remon.listener.onError: ${remon.getChannelId()} ${error}`);},
+        onStat(result) {/*console.log(`EVENT FIRED: onStat:  ${JSON.stringify(result)}`);*/},
+        async onRoomEvent(result) {
+	        const memberId = result.channel.id;
+            switch (result.event) {
+                case 'join':
+                    if (!classRoom[memberId]) {
+                        classRoom[memberId] = true;
+                        let memberVideo = document.createElement('video');
+                        videoAttrs.id = memberId.replace(":", "-");
+                        Object.keys(videoAttrs).forEach(key => memberVideo.setAttribute(key, videoAttrs[key]));
+                        config.view.remote = `#${memberVideo.id}`;
+                        memberVideo.remon = new Remon({config});
+                        const roomNumber = getEmptyRoom();
+                        //파이어스토어에 회원 정보가 업로드 되면, 회원 비디오를 강의실에 그린다
+                        const nickNameFinder = db.collection(fireBaseCollection)
+                            .doc(firebaseDoc)
+                            .onSnapshot(async (doc) => {
+	                            let memberName = '';
+	                            if (doc.get("userList")[memberId]) {
+		                            memberName = doc.get("userList")[memberId];
+		                            setMemberInfoLocal(memberId, roomNumber, memberName);
+		                            const selectedClassRoom = document.querySelector("#room" + roomNumber);
+		                            selectedClassRoom.innerHTML = getMemberInfoHtml(memberId, roomNumber, memberName);
+		                            selectedClassRoom.appendChild(memberVideo);
+		                            await memberVideo.remon.joinCast(memberVideo.id.replace("-", ":"))
+		                            //파이어스토어와 연결 리소스 해제
+		                            nickNameFinder();
+	                            }
+                            }
+                        )
+                    }
+                    break;
+                case 'leave':
+                    if (classRoom[memberId] && memberId !== remon.getChannelId()) {
+                        const roomNumber = members[memberId].room;
+                        let video = document.querySelector('#room' + roomNumber);
+                        classRoomEmpty[roomNumber - 1] = false;
+                        video.innerHTML = roomNumber + "번 - 입장대기";
+                        delete classRoom[memberId];
+                        await deleteUserList(memberId);
+                    }
+                    break;
+            }
+            console.log(`EVENT FIRED: onRoomEvent channel Id : ${remon.getChannelId()}`)
+            console.log(`EVENT FIRED: onRoomEvent: ${JSON.stringify(result)}`)
+        }
+    };
+
+  createDummyRemonForSearchLoop();
+
+  /* event binding */
+  $('#streamingReady').on('click', function () {
+    const url = $('#streamingUrl').val();
+
+    if($(this).hasClass("on")) {
+        pauseVideo();
+        $(this).html('강의 영상 보기');
+    } else {
+        loadVideo(url);
+        $(this).html('강의 영상 끄기');
+    }
+
+    $(this).toggleClass("on");
+    toggleButtonStyle($(this), "success");
+  });
+
+  $('#classOpen').on('click', async function()  {
+      if ($(this).hasClass("on")) {
+          if(confirm("강의를 종료하시겠습니까?\n회원들이 강의실에서 퇴장하게 됩니다.")) {
+              updateRoomInfo(ownerId, roomName, 0);
+              Object.keys(classRoom).forEach(function(id){
+                  if( id !== remon.getChannelId()){
+                      let video = document.getElementById(id.replace(":","-"));
+                      if(video && video.remon){
+                          otherVideos.removeChild(video);
+                      }
+                  }
+                  delete classRoom[id];
+              })
+              remon.close();
+              setTimeout( () => { location.reload();}, 1500);
+          }
+          return;
+      }
+      if($(this).hasClass("open")) {
+        if(confirm("강의를 시작하시겠습니까?\n회원들에게 라이브 스트리밍 영상이 송출됩니다.")) {
+            $(this).removeClass('btn-warning');
+            $(this).addClass('btn-danger');
+            updateRoomInfo(ownerId, roomName, 2);
+            $(this).addClass("on");
+            $(this).html('강의 종료하기');
+        }
+          return;
+      }
+      if(confirm("강의를 OPEN 하시겠습니까?\n회원들이 입장할 수 있게 됩니다.")) {
+          await remon.createRoom(roomName);
+          setTimeout( () => {
+          	remon.pauseLocalVideo(true);
+            remon.muteLocalAudio(true);
+          	}, 1500);
+          //firestore 업데이트는 remon SDK 에서 onComplete() 후 콜백으로 진행
+          $(this).addClass("open");
+          $(this).removeClass('btn-outline-warning');
+          $(this).addClass('btn-warning');
+          $(this).html('강의 시작하기');
+      }
+      return;
+  })
+
+  $('#muteLocalAudioButton').on('click', function () {
+      if(!$('#classOpen').hasClass('open')) {
+        alert("강의실이 OPEN 되지 않아, 강사 목소리가 송출되고 있지 않습니다.\n");
+        return;
+      }
+      if($(this).hasClass("on")) {
+          remon.muteLocalAudio(false);
+          $(this).html('강사 목소리 송출하지 않기');
+      } else {
+          remon.muteLocalAudio(true);
+          $(this).html('강사 목소리 다시 송출하기');
+      }
+      $(this).toggleClass("on");
+      toggleButtonStyle($(this), "secondary");
+  });
+
+    $('#coachingReady').on('click', function () {
+	    remon.captureScreen(640, 480, 30, false);
+	    window.open('./personalCoachingPage.html');
+	    $(this).toggleClass("on");
+	    toggleButtonStyle($(this), "dark");
+    });
+
+  function toggleButtonStyle(btn, style) {
+      btn.toggleClass("btn-"+style);
+      btn.toggleClass("btn-outline-"+style);
+  }
+
+  function loadVideo(url) {
+    let src = url ? url : 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const video = document.getElementById('video');
+    $("#src").attr("src", src);
+    let player = videojs('video');
+    player.play();
+  }
+
+  function pauseVideo() {
+	  let player = videojs('video');
+	  player.pause();
+  }
+
+  function getEmptyRoom() {
+        for (let i = 0; i < classRoomEmpty.length; i++) {
+            if(!classRoomEmpty[i]) {
+                classRoomEmpty[i]=true;
+                return i+1;
+            }
+        }
+        return -1;
+  }
+
+  function updateRoomInfo (ownerId, roomName, state) {
+	  db.collection(fireBaseCollection)
+		  .doc(firebaseDoc)
+		  .update({
+			  ownerId: ownerId,
+			  roomName: roomName,
+			  state: state,
+              onCoaching: firebase.firestore.FieldValue.delete(),
+              userList: firebase.firestore.FieldValue.delete()
+		  });
+  }
+
+    async function deleteUserList (userId) {
+	    await db.collection(fireBaseCollection)
+		    .doc(firebaseDoc)
+		    .update(
+			    {
+				    ["userList."+userId] : firebase.firestore.FieldValue.delete()
+			    });
+    }
+
+  function createDummyRemonForSearchLoop() {
+	  if (remon) remon.close();
+	  remon = new Remon({ config, listener });
+  }
+
+  function setMemberInfoLocal(memberId, roomNumber, memberName) {
+	  members[memberId] = {};
+	  members[memberId].room = roomNumber;
+	  members[memberId].name = memberName;
+  }
+
+  function getMemberInfoHtml(memberId, roomNumber, memberName) {
+	  return document.querySelector('#room-template').innerHTML
+		  .replaceAll("{roomNumber}", roomNumber)
+		  .replaceAll("{memberName}", memberName)
+		  .replaceAll("{channelId}", memberId);
+  }
+
+  function draw(memberId) {
+		  let memberVideo = document.createElement('video');
+		  videoAttrs.id = memberId.replace(":", "-");
+		  Object.keys(videoAttrs).forEach(key => memberVideo.setAttribute(key, videoAttrs[key]));
+		  config.view.remote = `#${memberVideo.id}`;
+		  memberVideo.remon = new Remon({config});
+		  const roomNumber = getEmptyRoom();
+		  // //파이어스토어에 회원 정보가 업로드 되면, 회원 비디오를 강의실에 그린다
+		  // const nickNameFinder = db.collection(fireBaseCollection)
+			//   .doc(firebaseDoc)
+			//   .onSnapshot(async (doc) => {
+			// 		  let memberName = '';
+			// 		  if (doc.get("userList")[memberId]) {
+			// 			  memberName = doc.get("userList")[memberId];
+			// 			  setMemberInfoLocal(memberId, roomNumber, memberName);
+			// 			  const selectedClassRoom = document.querySelector("#room" + roomNumber);
+			// 			  selectedClassRoom.innerHTML = getMemberInfoHtml(memberId, roomNumber, memberName);
+			// 			  selectedClassRoom.appendChild(memberVideo);
+			// 			  await memberVideo.remon.joinCast(memberVideo.id.replace("-", ":"))
+			// 			  //파이어스토어와 연결 리소스 해제
+			// 			  nickNameFinder();
+			// 		  }
+			// 	  }
+			//   )
+          const selectedClassRoom = document.querySelector("#room" + roomNumber);
+          selectedClassRoom.innerHTML = getMemberInfoHtml(memberId, roomNumber, "hello");
+          selectedClassRoom.appendChild(memberVideo);
+          memberVideo.remon.joinCast(memberVideo.id.replace("-", ":"));
+  }
+  function personalCoaching(target) {
+  	const channelId = target.closest('.member-info').dataset.channelId;
+  	window.open('./conference-member.html','코칭페이지');
+  }
+</script>
+  </body>
+</html>
+
+<!-- 회원 강의실template -->
+<script id="room-template" type="text/template">
+    <div class="member-info text-left" data-channel-id="{channelId}">
+        <div class="roomNumber btn-light text-center card-text" >{roomNumber}번 강의실</div>
+        <div class="member-name btn-light text-center card-text" >회원명: {memberName}</div>
+        <div class="member-name btn-light text-center card-text" >회원ID: {channelId}</div>
+        <div class="btn-light text-center card-text">대화하기</div>
+        <div class="btn-light text-center card-text" onclick="personalCoaching(this)">개별코칭하기</div>
+        <div style="height: 20%">&nbsp;</div>
+    </div>
+</script>
